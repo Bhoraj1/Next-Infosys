@@ -26,6 +26,7 @@ import Teams from "./components/Teams.jsx";
 import Services from "./components/Services.jsx";
 import CoursesPage from "./components/CoursesPage.jsx";
 import Review from "./components/Review.jsx";
+import AllServices from "./pages/AllService.jsx";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
             <Route path="/courses" element={<CoursesPage />} />
             <Route path="/course/:id" element={<CourseDetailPage />} />
             <Route path="/service/:id" element={<ServiceDetails />} />
+            <Route path="/AllServices" element={<AllServices />} />
 
             <Route path="/register/:id" element={<RegistrationPage />} />
             <Route path="/contact" element={<ContactPage />} />

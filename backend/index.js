@@ -13,6 +13,7 @@ import newService from "./routes/services.route.js";
 import faqRoute from "./routes/faq.route.js";
 import teamRoute from "./routes/team.route.js";
 import reviewRoute from "./routes/review.route.js";
+import blogRoute from "./routes/blog.route.js";
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/backend7", newService);
 app.use("/api/backend8", faqRoute);
 app.use("/api/backend9", teamRoute);
 app.use("/api/backend10", reviewRoute);
+app.use("/api/backend11", blogRoute);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

@@ -19,6 +19,7 @@ import FAQ_Dash from "./Admin/FAQ/FAQ_Dash";
 import TeamForm from "./Admin/Team/TeamForm";
 import TeamDash from "./Admin/Team/TeamDash";
 import ReviewForm from "./Admin/revieww/ReviewForm";
+import BlogForm from "./Admin/blog/BlogForm";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -60,6 +61,7 @@ export default function Dashboard() {
       {tab === "team-dash" && <TeamDash />}
       {tab === "add-review" && <ReviewForm />}
       {tab === "review-dash" && <TeamDash />}
+      {tab === "blog-form" && <BlogForm />}
     </div>
     </div>
   );

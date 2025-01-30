@@ -3,12 +3,14 @@ import { useSelector } from "react-redux";
 const FaqContext = createContext();
 const TeamContext = createContext();
 const RevivewContext = createContext();
+const BlogContext = createContext();
 
 export const ContextProvider = ({ children }) => {
   const { adminDetails } = useSelector((state) => state.admin);
   const [faqs, setFaqs] = useState([]);
   const [teams, setTeams] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
     const fetchFaqs = async () => {
@@ -63,18 +65,38 @@ export const ContextProvider = ({ children }) => {
 
     fetchReviews();
   }, []);
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(`/api/backend11/getBlogs`);
+        const data = await res.json();
+        if (!res.ok) {
+          console.error(data.message || "Failed to fetch blogs.");
+        } else {
+          setBlogs(data.blogs);
+        }
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchReviews();
+  }, []);
 
   return (
-    <RevivewContext.Provider value={{reviews}}>
-      <FaqContext.Provider value={{ faqs }}>
-        <TeamContext.Provider value={{ teams }}>
-          {children}
-        </TeamContext.Provider>
-      </FaqContext.Provider>
-    </RevivewContext.Provider>
+    <BlogContext.Provider value={{ blogs }}>
+      <RevivewContext.Provider value={{ reviews }}>
+        <FaqContext.Provider value={{ faqs }}>
+          <TeamContext.Provider value={{ teams }}>
+            {children}
+          </TeamContext.Provider>
+        </FaqContext.Provider>
+      </RevivewContext.Provider>
+    </BlogContext.Provider>
   );
 };
 
 export const useFaqs = () => useContext(FaqContext);
 export const useTeams = () => useContext(TeamContext);
 export const useReview = () => useContext(RevivewContext);
+export const useBlog = () => useContext(BlogContext);

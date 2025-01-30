@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FaChartLine, FaServer } from "react-icons/fa";
 import { BiCodeAlt } from "react-icons/bi";
 import { TbDeviceMobileCode } from "react-icons/tb";
@@ -7,7 +6,6 @@ import { FcVoicePresentation } from "react-icons/fc";
 import { RiPresentationFill } from "react-icons/ri";
 import { FaComputer } from "react-icons/fa6";
 import { GrCloudSoftware } from "react-icons/gr";
-import { useNavigate } from "react-router-dom";
 
 const servicesList = [
   {
@@ -76,32 +74,14 @@ const servicesList = [
 ];
 
 export default function Services() {
-  const [visibleServices, setVisibleServices] = useState(6);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const navigate = useNavigate();
-  const toggleServices = () => {
-    navigate("/AllServices", {
-      state: {
-        services: servicesList.map(({ title, description, icon }) => ({
-          title,
-          description,
-          icon: icon.type.name,
-        })),
-      },
-    });
-    setIsExpanded(!isExpanded);
-    setVisibleServices(isExpanded ? 6 : servicesList.length);
-  };
-
-  const displayedServices = servicesList.slice(0, visibleServices);
   return (
-    <div className="font-[sans-serif] bg-gradient-to-r hide: bg-white py-12 px-4">
+    <div className="font-[sans-serif] bg-gradient-to-r hide: bg-white py-12 px-4 mt-11">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-center text-2xl sm:text-4xl font-bold mb-16">
           Discover Our Exclusive Services
         </h2>
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-12 max-md:max-w-lg mx-auto">
-          {displayedServices.map((service, index) => (
+          {servicesList.map((service, index) => (
             <div
               key={index}
               className="rounded-xl group p-8 text-center hover:bg-white text-gray-800 hover:text-[#F79F35] hover:shadow-xl transition duration-300"
@@ -114,16 +94,6 @@ export default function Services() {
             </div>
           ))}
         </div>
-        {servicesList.length > 6 && (
-          <div className="text-center mt-8">
-            <button
-              onClick={toggleServices}
-              className="px-6 py-2 text-[#F79F35]   rounded-lg  transition duration-300"
-            >
-              {isExpanded ? "Show Less" : "Show More"}
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

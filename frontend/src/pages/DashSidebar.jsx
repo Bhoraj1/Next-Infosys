@@ -19,7 +19,7 @@ import { MdTune } from "react-icons/md";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { ImSwitch } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
-import Dashboard from './Dashboard';
+import Dashboard from "./Dashboard";
 
 export default function DashSidebar() {
   const location = useLocation();
@@ -311,6 +311,45 @@ export default function DashSidebar() {
                       className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
                     >
                       Review Dashboard
+                    </a>
+                  </ul>
+                </li>
+                <li>
+                  <a
+                    onClick={() => toggleSubMenu("blog")}
+                    className="text-gray-300 text-sm flex cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
+                  >
+                    <span>Blog Management</span>
+                    <FiChevronDown
+                      className={`arrowIcon  ml-auto transition-al duration-500  ${
+                        openSubMenu2 === "blog" ? "rotate-0" : "-rotate-90"
+                      }`}
+                    />
+                  </a>
+                  <ul
+                    className={`sub-menu overflow-hidden transition-[max-height] duration-500 ease-in-out ml-8 ${
+                      openSubMenu2 === "blog" ? "max-h-[300px]" : "max-h-0"
+                    }`}
+                  >
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleSubMenu("blog");
+                        navigate("/dashboard?tab=blog-form");
+                      }}
+                      className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
+                    >
+                      Post Blog
+                    </a>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleSubMenu("blog");
+                        navigate("/dashboard?tab=blog-dash");
+                      }}
+                      className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
+                    >
+                      Blog Dashboard
                     </a>
                   </ul>
                 </li>
