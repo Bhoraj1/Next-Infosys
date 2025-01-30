@@ -120,3 +120,22 @@ export const getTeams = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteTeamMember = async (req, res, next) => {
+  // console.log(req.user);
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to delete this TeamMember")
+    );
+  }
+  const TeamMember = await TeamModel.findById(req.params.id);
+  if (!TeamMember) {
+    return next(errorHandler(404, "Team Member not found"));
+  }
+  try {
+    await TeamModel.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "TeamMember deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};

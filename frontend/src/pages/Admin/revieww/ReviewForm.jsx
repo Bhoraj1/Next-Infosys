@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, Label, Spinner, TextInput, Textarea } from "flowbite-react";
+import {
+  Button,
+  FileInput,
+  Label,
+  Spinner,
+  TextInput,
+  Textarea,
+} from "flowbite-react";
 import { toast } from "react-hot-toast";
 
 export default function ReviewForm() {
@@ -125,14 +132,13 @@ export default function ReviewForm() {
         </div>
 
         <div className="mb-4">
-          <Label htmlFor="image" />
-          <input
+          <Label htmlFor="image" value="Your Image" />
+          <FileInput
             type="file"
             id="image"
-            name="image"
+            className="mt-1"
             accept="image/*"
             onChange={handleInputChange}
-            className="mt-2 w-full "
             required
           />
         </div>

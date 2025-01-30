@@ -39,3 +39,22 @@ export const getFaqs = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteFAQ = async (req, res, next) => {
+  // console.log(req.user);
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to delete this FAQ")
+    );
+  }
+  const FAQ = await FAQModel.findById(req.params.id);
+  if (!FAQ) {
+    return next(errorHandler(404, "FAQ not found"));
+  }
+  try {
+    await FAQModel.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "FAQ deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};

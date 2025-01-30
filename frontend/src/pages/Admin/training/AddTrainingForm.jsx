@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Label, Textarea, TextInput } from "flowbite-react";
+import { Button, FileInput, Label, Textarea, TextInput } from "flowbite-react";
 import toast from "react-hot-toast";
 
 export default function AddTrainingForm() {
@@ -75,14 +75,15 @@ export default function AddTrainingForm() {
               className="mt-1 block w-full"
             />
           </div>
-          <div>
-            <Label>Image</Label>
-            <TextInput
+          <div className="mb-4">
+            <Label htmlFor="image" value="Image" />
+            <FileInput
               type="file"
               id="image"
-              name="image"
+              className="mt-1"
+              accept="image/*"
               onChange={handleChange}
-              className="w-full text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded"
+              required
             />
           </div>
         </div>

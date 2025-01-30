@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Spinner } from "flowbite-react";
 import { toast } from "react-hot-toast";
+import useLoading from "../../../hooks/useLoading";
+import { Spinner } from "flowbite-react";
+import { useSelector } from "react-redux";
 
 export default function TeamForm() {
-  const [loading, setLoading] = useState(false);
+  const loading = useSelector((state) => state.loading.loading);
+  const setLoading = useLoading();
   // Single state for all form fields
   const [formData, setFormData] = useState({
     name: "",
@@ -77,8 +80,6 @@ export default function TeamForm() {
     formDataToSend.append("description", description);
     formDataToSend.append("socialMedia", JSON.stringify(socialMedia));
     formDataToSend.append("image", image);
-
-    console.log(formData);
 
     try {
       setLoading(true);

@@ -1,10 +1,20 @@
-import { Button, Card, Label, Textarea, TextInput } from "flowbite-react";
+import {
+  Button,
+  FileInput,
+  Label,
+  Spinner,
+  Textarea,
+  TextInput,
+} from "flowbite-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useLoading from "../../../hooks/useLoading";
+import { useSelector } from "react-redux";
 export default function ServicesForm() {
   const [formData, setFormData] = useState({});
+  const loading = useSelector((state) => state.loading.loading);
   const [file, setFile] = useState("");
-
+  const setLoading = useLoading();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -14,18 +24,22 @@ export default function ServicesForm() {
     formDataObj.append("description", formData.description);
 
     try {
+      setLoading(true);
       const res = await fetch("/api/backend7/service", {
         method: "POST",
         body: formDataObj,
       });
       const data = await res.json();
       if (!res.ok) {
+        setLoading(false);
         toast.error("Failed to add service");
         return;
       } else {
+        setLoading(false);
         toast.success("Service added successfully");
       }
     } catch (error) {
+      setLoading(false);
       console.error(error);
     }
   };
@@ -33,6 +47,13 @@ export default function ServicesForm() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen ">
+        <Spinner size="xl" />
+      </div>
+    );
 
   return (
     <div className="mx-auto p-6 m-7 w-80 sm:w-[800px] bg-white rounded-lg shadow-xl">
@@ -70,12 +91,18 @@ export default function ServicesForm() {
             onChange={handleChange}
             rows={6}
           />
-          <TextInput
-            type="file"
-            id="image"
-            onChange={(e) => setFile(e.target.files[0])}
-            className="w-full mt-2 text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded"
-          />
+
+          <div className="mb-4">
+            <Label htmlFor="image" value="Image" />
+            <FileInput
+              type="file"
+              id="image"
+              className="mt-1"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files[0])}
+              required
+            />
+          </div>
         </div>
         <Button type="submit" className=" bg-blue-950">
           Add Service

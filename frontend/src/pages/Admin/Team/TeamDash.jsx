@@ -4,11 +4,11 @@ import { FaFacebook, FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useTeams } from "../../../store/ContextAPI";
-
+import { toast } from "react-hot-toast";
 
 export default function TeamDash() {
   const { adminDetails } = useSelector((state) => state.admin);
-    const { teams } = useTeams();
+  const { teams, setTeams } = useTeams();
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -16,6 +16,26 @@ export default function TeamDash() {
   const handleViewDetails = (team) => {
     setSelectedTeam(team);
     setShowViewModal(true);
+  };
+
+  const [teamIdTodelete, setTeamIdTodelete] = useState(null);
+
+  const handleDeleteTeamMember = async () => {
+    try {
+      const res = await fetch(
+        `api/backend9/delete-teamMember/${teamIdTodelete}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (res.ok) {
+        setTeams((prev) => prev.filter((team) => team._id !== teamIdTodelete));
+        setShowModal(false);
+        toast.success("Team Member Deleted Successfully!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -64,7 +84,7 @@ export default function TeamDash() {
                   <span
                     onClick={() => {
                       setShowModal(true);
-                      setUserIdToDelete(user._id);
+                      setTeamIdTodelete(user._id);
                     }}
                     className="font-medium text-red-600 hover:underline cursor-pointer"
                   >
@@ -76,7 +96,9 @@ export default function TeamDash() {
           </Table.Body>
         </Table>
       ) : (
-        <p>There are no teams yet!</p>
+        <div className="text-center text-2xl mt-8 font-semibold text-black  dark:text-gray-400">
+          There are no team yet !
+        </div>
       )}
 
       <Modal
@@ -93,7 +115,9 @@ export default function TeamDash() {
               Are you sure you want to delete this user ?{" "}
             </h3>
             <div className="flex justify-center gap-7">
-              <Button color="failure">Yes, I am sure</Button>
+              <Button color="failure" onClick={handleDeleteTeamMember}>
+                Yes, I am sure
+              </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, Cancel
               </Button>
@@ -133,11 +157,11 @@ export default function TeamDash() {
                   </p>
                   <p>
                     <strong className="text-gray-700">Email:</strong>{" "}
-                  {selectedTeam.email}
+                    {selectedTeam.email}
                   </p>
                   <p>
                     <strong className="text-gray-700">Contact:</strong>{" "}
-                   {selectedTeam.phoneNumber}
+                    {selectedTeam.phoneNumber}
                   </p>
                 </div>
               </div>

@@ -4,6 +4,7 @@ const FaqContext = createContext();
 const TeamContext = createContext();
 const RevivewContext = createContext();
 const BlogContext = createContext();
+const LoaderContext = createContext();
 
 export const ContextProvider = ({ children }) => {
   const { adminDetails } = useSelector((state) => state.admin);
@@ -11,19 +12,24 @@ export const ContextProvider = ({ children }) => {
   const [teams, setTeams] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`api/backend8/get-faqs`);
         const data = await res.json();
         // console.log("Data Fetching", data);
         if (!res.ok) {
+          setLoading(false);
           console.error(data.message || "Failed to fetch users.");
         } else {
+          setLoading(false);
           setFaqs(data.faqs);
         }
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching users:", error);
       }
     };
@@ -34,14 +40,18 @@ export const ContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`/api/backend9/getTeams`);
         const data = await res.json();
         if (!res.ok) {
+          setLoading(false);
           console.error(data.message || "Failed to fetch Teams.");
         } else {
+          setLoading(false);
           setTeams(data.teams);
         }
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching posts:", error);
       }
     };
@@ -84,10 +94,10 @@ export const ContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <BlogContext.Provider value={{ blogs }}>
-      <RevivewContext.Provider value={{ reviews }}>
-        <FaqContext.Provider value={{ faqs }}>
-          <TeamContext.Provider value={{ teams }}>
+    <BlogContext.Provider value={{ blogs, setBlogs, setLoading }}>
+      <RevivewContext.Provider value={{ reviews, setReviews, setLoading }}>
+        <FaqContext.Provider value={{ faqs, setFaqs, setLoading }}>
+          <TeamContext.Provider value={{ teams, setTeams, setLoading }}>
             {children}
           </TeamContext.Provider>
         </FaqContext.Provider>

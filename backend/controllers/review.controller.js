@@ -94,3 +94,22 @@ export const getReview = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteReview = async (req, res, next) => {
+  // console.log(req.user);
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to delete this Review")
+    );
+  }
+  const Review = await ReviewModel.findById(req.params.id);
+  if (!Review) {
+    return next(errorHandler(404, "Review not found"));
+  }
+  try {
+    await ReviewModel.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Review deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+}

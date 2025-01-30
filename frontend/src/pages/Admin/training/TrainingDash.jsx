@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
-export default function AllTraining() {
+export default function TrainingDash() {
   const { adminDetails } = useSelector((state) => state.admin);
   const [trainings, setTraining] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -66,7 +66,9 @@ export default function AllTraining() {
     <div className="table-auto mt-7 overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300">
       {adminDetails.isAdmin && trainings.length > 0 ? (
         <>
-          <h1 className="flex justify-center items-center text-2xl font-semibold mb-4">Course Management</h1>
+          <h1 className="flex justify-center items-center text-2xl font-semibold mb-4">
+            Course Management
+          </h1>
           <Table hoverable>
             <Table.Head>
               <Table.HeadCell>Title</Table.HeadCell>
@@ -116,7 +118,9 @@ export default function AllTraining() {
           </Table>
         </>
       ) : (
-        <h1 className="text-2xl font-semibold mb-4">No courses found.</h1>
+        <div className="text-center text-2xl mt-8 font-semibold text-black  dark:text-gray-400">
+          There are no training yet !
+        </div>
       )}
 
       {selectedCourse && (

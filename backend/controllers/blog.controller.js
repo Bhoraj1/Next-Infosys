@@ -91,3 +91,22 @@ export const getBlog = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteBlog = async (req, res, next) => {
+  // console.log(req.user);
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to delete this service")
+    );
+  }
+  const blog = await BlogModel.findById(req.params.id);
+  if (!blog) {
+    return next(errorHandler(404, "Blog not found"));
+  }
+  try {
+    await BlogModel.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Blog post deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};

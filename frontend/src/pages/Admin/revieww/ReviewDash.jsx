@@ -1,57 +1,75 @@
 import { Button, Modal, Table } from "flowbite-react";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useState } from "react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import { useFaqs } from "../../../store/ContextAPI";
-import { toast } from "react-hot-toast";
+import { useReview } from "../../../store/ContextAPI";
+import toast from "react-hot-toast";
 
-export default function FAQ_Dash() {
-  const { faqs, setFaqs } = useFaqs();
+export default function ReviewDash() {
   const { adminDetails } = useSelector((state) => state.admin);
+  const { reviews, setReviews } = useReview();
   const [showModal, setShowModal] = useState(false);
-  const [faqIdTodelete, setFaqIdTodelete] = useState(null);
-
-  const handleDeleteFAQ = async () => {
+  const [reviewIdTodelete, setReviewIdTodelete] = useState(null);
+  const handleDeleteReview = async () => {
     try {
-      const res = await fetch(`/api/backend8/delete-faq/${faqIdTodelete}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `/api/backend10/delete-review/${reviewIdTodelete}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (res.ok) {
-        setFaqs((prev) => prev.filter((faq) => faq._id !== faqIdTodelete));
+        setReviews((prev) =>
+          prev.filter((review) => review._id !== reviewIdTodelete)
+        );
         setShowModal(false);
-        toast.success("FAQ Deleted Successfully!");
+        toast.success("Review Deleted Successfully!");
       }
     } catch (error) {
       console.log(error);
     }
   };
   return (
-    <div className="table-auto mt-4 overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500  ">
-      {adminDetails?.isAdmin && faqs.length > 0 ? (
+    <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500  ">
+      {adminDetails?.isAdmin && reviews.length > 0 ? (
         <Table hoverable className="shadow-md">
           <Table.Head>
-            <Table.HeadCell>Post Date</Table.HeadCell>
-            <Table.HeadCell>Question</Table.HeadCell>
-            <Table.HeadCell>Answer</Table.HeadCell>
+            <Table.HeadCell>Image</Table.HeadCell>
+            <Table.HeadCell>Name</Table.HeadCell>
+            <Table.HeadCell>Rating</Table.HeadCell>
+            <Table.HeadCell>Review</Table.HeadCell>
+            <Table.HeadCell>Edit</Table.HeadCell>
             <Table.HeadCell>Delete</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {faqs.map((faq) => (
+            {reviews.map((review) => (
               <Table.Row
-                key={faq._id}
+                key={review._id}
                 className="bg-white dark:border-gray-700 dark:bg-gray-800 "
               >
                 <Table.Cell>
-                  {new Date(faq.createdAt).toDateString()}
+                  <img
+                    src={review.image}
+                    alt={review.name}
+                    className="w-10 h-10 object-cover bg-gray-500  rounded-full"
+                  />
                 </Table.Cell>
-                <Table.Cell>{faq.question}</Table.Cell>
-                <Table.Cell>{faq.answer}</Table.Cell>
+                <Table.Cell>{review.name}</Table.Cell>
+                <Table.Cell>{review.rating}</Table.Cell>
 
+                <Table.Cell>
+                  <p>{review.review}</p>
+                </Table.Cell>
+                <Table.Cell>
+                  <span className="hover:underline text-blue-800 cursor-pointer">
+                    Edit
+                  </span>
+                </Table.Cell>
                 <Table.Cell>
                   <span
                     onClick={() => {
                       setShowModal(true);
-                      setFaqIdTodelete(faq._id);
+                      setReviewIdTodelete(review._id);
                     }}
                     className="font-medium text-red-600 hover:underline cursor-pointer"
                   >
@@ -64,9 +82,10 @@ export default function FAQ_Dash() {
         </Table>
       ) : (
         <div className="text-center text-2xl mt-8 font-semibold text-black  dark:text-gray-400">
-          There are no FAQ yet !
+          There are no review yet!
         </div>
       )}
+
       <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -81,7 +100,7 @@ export default function FAQ_Dash() {
               Are you sure you want to delete this user ?{" "}
             </h3>
             <div className="flex justify-center gap-7">
-              <Button color="failure" onClick={handleDeleteFAQ}>
+              <Button color="failure" onClick={handleDeleteReview}>
                 Yes, I am sure
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>

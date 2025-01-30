@@ -9,7 +9,7 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.adminDetails = action.payload; // for Save admin details
+      state.adminDetails = action.payload;
     },
     logout: (state) => {
       state.adminDetails = null;
