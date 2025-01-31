@@ -27,14 +27,22 @@ export const addFaq = async (req, res, next) => {
 
 export const getFaqs = async (req, res, next) => {
   try {
-    const faqs = await FAQModel.find();
-    if (faqs.length === 0) {
-      return next(errorHandler(404, "FAQ not found"));
+    if (req.params.id) {
+      const faq = await FAQModel.findById(req.params.id);
+      if (!faq) {
+        return res.status(404).json({ message: "FAQ not found" });
+      }
+      return res.status(200).json(faq);
+    } else {
+      const faqs = await FAQModel.find();
+      if (faqs.length === 0) {
+        return next(errorHandler(404, "FAQ not found"));
+      }
+      res.status(200).json({
+        message: "FAQs retrieved successfully!",
+        faqs,
+      });
     }
-    res.status(200).json({
-      message: "FAQs retrieved successfully!",
-      faqs,
-    });
   } catch (error) {
     next(error);
   }
@@ -43,9 +51,7 @@ export const getFaqs = async (req, res, next) => {
 export const deleteFAQ = async (req, res, next) => {
   // console.log(req.user);
   if (!req.user.isAdmin) {
-    return next(
-      errorHandler(403, "You are not authorized to delete this FAQ")
-    );
+    return next(errorHandler(403, "You are not authorized to delete this FAQ"));
   }
   const FAQ = await FAQModel.findById(req.params.id);
   if (!FAQ) {
@@ -54,6 +60,27 @@ export const deleteFAQ = async (req, res, next) => {
   try {
     await FAQModel.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "FAQ deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateFAQ = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(errorHandler(403, "You are not authorized to Update this FAQ"));
+  }
+  try {
+    const updateFAQ = await FAQModel.findByIdAndUpdate(
+      req.params.faqId,
+      {
+        $set: {
+          question: req.body.question,
+          answer: req.body.answer,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json(updateFAQ);
   } catch (error) {
     next(error);
   }

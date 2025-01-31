@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import useLoading from "../hooks/useLoading";
+import { useLocation } from "react-router-dom";
 const FaqContext = createContext();
 const TeamContext = createContext();
 const RevivewContext = createContext();
@@ -13,8 +14,7 @@ export const ContextProvider = ({ children }) => {
   const [teams, setTeams] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [blogs, setBlogs] = useState([]);
-  const {setLoading,loading} = useLoading();
- 
+  const { setLoading, loading } = useLoading();
 
   useEffect(() => {
     const fetchFaqs = async () => {
@@ -22,7 +22,6 @@ export const ContextProvider = ({ children }) => {
         setLoading(true);
         const res = await fetch(`api/backend8/get-faqs`);
         const data = await res.json();
-        // console.log("Data Fetching", data);
         if (!res.ok) {
           setLoading(false);
           console.error(data.message || "Failed to fetch users.");
@@ -97,15 +96,15 @@ export const ContextProvider = ({ children }) => {
 
   return (
     <LoaderContext.Provider value={{ loading, setLoading }}>
-    <BlogContext.Provider value={{ blogs, setBlogs, setLoading }}>
-      <RevivewContext.Provider value={{ reviews, setReviews, setLoading }}>
-        <FaqContext.Provider value={{ faqs, setFaqs, setLoading }}>
-          <TeamContext.Provider value={{ teams, setTeams, setLoading }}>
-            {children}
-          </TeamContext.Provider>
-        </FaqContext.Provider>
-      </RevivewContext.Provider>
-    </BlogContext.Provider>
+      <BlogContext.Provider value={{ blogs, setBlogs, setLoading }}>
+        <RevivewContext.Provider value={{ reviews, setReviews, setLoading }}>
+          <FaqContext.Provider value={{ faqs, setFaqs, setLoading }}>
+            <TeamContext.Provider value={{ teams, setTeams, setLoading }}>
+              {children}
+            </TeamContext.Provider>
+          </FaqContext.Provider>
+        </RevivewContext.Provider>
+      </BlogContext.Provider>
     </LoaderContext.Provider>
   );
 };

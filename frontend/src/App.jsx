@@ -27,6 +27,7 @@ import Services from "./components/Services.jsx";
 import CoursesPage from "./components/CoursesPage.jsx";
 import Review from "./components/Review.jsx";
 import AllServices from "./pages/AllService.jsx";
+import FAQForm from "./pages/Admin/FAQ/FAQ_Form";
 
 function App() {
   return (
@@ -67,7 +68,8 @@ function App() {
               <Route
                 path="/update-student/:studentId"
                 element={<UpdateStudent />}
-              />
+              />  
+              <Route path="/update-faq/:faqId" element={<FAQForm />} />
               <Route path="/update-service/:id" element={<UpdateService />} />
             </Route>
             <Route path="/admin">

@@ -4,12 +4,15 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useFaqs } from "../../../store/ContextAPI";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function FAQ_Dash() {
   const { faqs, setFaqs } = useFaqs();
+  const navigate = useNavigate();
   const { adminDetails } = useSelector((state) => state.admin);
   const [showModal, setShowModal] = useState(false);
   const [faqIdTodelete, setFaqIdTodelete] = useState(null);
+
 
   const handleDeleteFAQ = async () => {
     try {
@@ -26,7 +29,7 @@ export default function FAQ_Dash() {
     }
   };
   return (
-    <div className="table-auto mt-4 overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500  ">
+    <div className="table-auto mt-4 overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500 ">
       {adminDetails.isAdmin && faqs.length > 0 ? (
         <Table hoverable className="shadow-md">
           <Table.Head>
@@ -48,7 +51,10 @@ export default function FAQ_Dash() {
                 <Table.Cell>{faq.question}</Table.Cell>
                 <Table.Cell>{faq.answer}</Table.Cell>
                 <Table.Cell>
-                  <span className="hover:underline text-blue-800 cursor-pointer">
+                  <span
+                    onClick={() => navigate(`/update-faq/${faq._id}`)}
+                    className="hover:underline text-blue-800 cursor-pointer"
+                  >
                     Edit
                   </span>
                 </Table.Cell>
