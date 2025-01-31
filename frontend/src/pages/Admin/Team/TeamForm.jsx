@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import useLoading from "../../../hooks/useLoading";
-import { Spinner } from "flowbite-react";
-import { useSelector } from "react-redux";
+import SpinnerComponent from "../../../hooks/SpinnerComponent";
 
 export default function TeamForm() {
-  const loading = useSelector((state) => state.loading.loading);
-  const setLoading = useLoading();
+  const { setLoading, loading } = useLoading();
   // Single state for all form fields
   const [formData, setFormData] = useState({
     name: "",
@@ -100,15 +98,10 @@ export default function TeamForm() {
       toast.error("Something went wrong!");
     }
   };
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen ">
-        <Spinner size="xl" />
-      </div>
-    );
 
   return (
     <div className=" mx-auto mt-3 p-4 bg-white rounded-lg shadow-md">
+      {loading && <SpinnerComponent />}
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
         Add Team Member
       </h2>

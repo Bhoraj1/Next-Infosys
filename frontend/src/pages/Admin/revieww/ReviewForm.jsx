@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import {
-  Button,
-  FileInput,
-  Label,
-  Spinner,
-  TextInput,
-  Textarea,
-} from "flowbite-react";
+import { Button, FileInput, Label, TextInput, Textarea } from "flowbite-react";
 import { toast } from "react-hot-toast";
+import SpinnerComponent from "./../../../hooks/SpinnerComponent";
+import useLoading from "./../../../hooks/useLoading";
 
 export default function ReviewForm() {
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading } = useLoading();
   const [formData, setFormData] = useState({
     name: "",
     review: "",
@@ -70,15 +65,9 @@ export default function ReviewForm() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen ">
-        <Spinner size="xl" />
-      </div>
-    );
-
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      {loading && <SpinnerComponent />}
       <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
         Add a Review
       </h2>

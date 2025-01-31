@@ -8,6 +8,7 @@ import {
 } from "flowbite-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import SpinnerComponent from "../../../hooks/SpinnerComponent";
 
 export default function BlogForm() {
   const [loading, setLoading] = useState(false);
@@ -69,14 +70,9 @@ export default function BlogForm() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen ">
-        <Spinner size="xl" />
-      </div>
-    );
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      {loading && <SpinnerComponent />}
       <h2 className="text-2xl flex justify-center items-center font-bold mb-4">
         Create a New Blog Post
       </h2>

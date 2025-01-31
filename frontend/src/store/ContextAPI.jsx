@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import useLoading from "../hooks/useLoading";
 const FaqContext = createContext();
 const TeamContext = createContext();
 const RevivewContext = createContext();
@@ -12,7 +13,8 @@ export const ContextProvider = ({ children }) => {
   const [teams, setTeams] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {setLoading,loading} = useLoading();
+ 
 
   useEffect(() => {
     const fetchFaqs = async () => {
@@ -57,7 +59,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     fetchUsers();
-  }, [adminDetails.isAdmin]);
+  }, [adminDetails?.isAdmin]);
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -94,6 +96,7 @@ export const ContextProvider = ({ children }) => {
   }, []);
 
   return (
+    <LoaderContext.Provider value={{ loading, setLoading }}>
     <BlogContext.Provider value={{ blogs, setBlogs, setLoading }}>
       <RevivewContext.Provider value={{ reviews, setReviews, setLoading }}>
         <FaqContext.Provider value={{ faqs, setFaqs, setLoading }}>
@@ -103,6 +106,7 @@ export const ContextProvider = ({ children }) => {
         </FaqContext.Provider>
       </RevivewContext.Provider>
     </BlogContext.Provider>
+    </LoaderContext.Provider>
   );
 };
 
@@ -110,3 +114,4 @@ export const useFaqs = () => useContext(FaqContext);
 export const useTeams = () => useContext(TeamContext);
 export const useReview = () => useContext(RevivewContext);
 export const useBlog = () => useContext(BlogContext);
+export const useLoader = () => useContext(LoaderContext);

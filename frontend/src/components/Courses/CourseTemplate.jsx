@@ -10,7 +10,7 @@ export default function CourseTemplate({ course }) {
       state: { course },
     });
   };
-
+  console.log(course);
   return (
     // <div className="m-11">
     //   <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
@@ -79,7 +79,7 @@ export default function CourseTemplate({ course }) {
         {/* Course Duration */}
         <div className="mb-8">
           <span className="inline-block bg-gradient-to-r from-blue-800 to-blue-950 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg">
-            Duration: 8 Weeks
+            {course.courseDuration}
           </span>
         </div>
 
@@ -98,16 +98,15 @@ export default function CourseTemplate({ course }) {
         <div className="flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-6 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg">
           <img
             className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
-            src="https://via.placeholder.com/150"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/340px-Default_pfp.svg.png?20220226140232"
             alt="Instructor"
           />
           <div className="text-center sm:text-left">
-            <h3 className="text-2xl font-bold text-gray-900">John Doe</h3>
+            <h3 className="text-2xl font-bold text-gray-900">
+              {course.instructorName}
+            </h3>
             <p className="text-gray-600">Senior Frontend Developer</p>
-            <p className="text-gray-600 mt-2">
-              With over 10 years of experience, John specializes in building
-              scalable and maintainable web applications using React.
-            </p>
+            <p className="text-gray-600 mt-2">{course.instructorBio}</p>
           </div>
         </div>
 

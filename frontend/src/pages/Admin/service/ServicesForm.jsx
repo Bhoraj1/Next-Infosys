@@ -9,12 +9,11 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import useLoading from "../../../hooks/useLoading";
-import { useSelector } from "react-redux";
+import SpinnerComponent from "../../../hooks/SpinnerComponent";
 export default function ServicesForm() {
   const [formData, setFormData] = useState({});
-  const loading = useSelector((state) => state.loading.loading);
   const [file, setFile] = useState("");
-  const setLoading = useLoading();
+  const { setLoading, loading } = useLoading();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -29,7 +28,6 @@ export default function ServicesForm() {
         method: "POST",
         body: formDataObj,
       });
-      const data = await res.json();
       if (!res.ok) {
         setLoading(false);
         toast.error("Failed to add service");
@@ -48,15 +46,9 @@ export default function ServicesForm() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen ">
-        <Spinner size="xl" />
-      </div>
-    );
-
   return (
     <div className="mx-auto p-6 m-7 w-80 sm:w-[800px] bg-white rounded-lg shadow-xl">
+      {loading && <SpinnerComponent />}
       <h2 className="text-2xl font-bold">Services Form</h2>
       <form onSubmit={handleSubmit} method="POST" enctype="multipart/form-data">
         <div className="mb-4">

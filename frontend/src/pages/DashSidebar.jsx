@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
-// import { useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-// import toast from "react-hot-toast";
-// import { logout } from "../redux/adminRedux/adminSlice";
-import {
-  FaBars,
-  FaFileInvoiceDollar,
-  FaHome,
-  FaLaptopCode,
-  FaTimes,
-} from "react-icons/fa";
+import { FaBars, FaFileInvoiceDollar, FaHome, FaTimes } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
@@ -18,8 +9,12 @@ import { RiShieldCheckFill } from "react-icons/ri";
 import { MdTune } from "react-icons/md";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { ImSwitch } from "react-icons/im";
+import { PiStudentBold } from "react-icons/pi";
+import { IoPeople } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import Dashboard from "./Dashboard";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/adminRedux/adminSlice";
+import toast from "react-hot-toast";
 
 export default function DashSidebar() {
   const location = useLocation();
@@ -27,6 +22,7 @@ export default function DashSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openSubMenu2, setOpenSubMenu2] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -36,24 +32,24 @@ export default function DashSidebar() {
     }
   }, [location.search]);
 
-  // const handleSignout = async () => {
-  //   try {
-  //     const res = await fetch("/api/admin/signout", {
-  //       method: "POST",
-  //     });
-  //     const data = await res.json();
-  //     if (!res.ok) {
-  //       console.error(data.message || "Failed to sign out");
-  //     } else {
-  //       localStorage.clear();
-  //       dispatch(logout());
-  //       toast.success(data.message);
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.error("Sign out failed:", error);
-  //   }
-  // };
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/api/admin/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message || "Failed to sign out");
+      } else {
+        localStorage.clear();
+        dispatch(logout());
+        toast.success(data.message);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
+  };
 
   const toggleDropdown = (dropdown) => {
     setIsSubMenuOpen(isSubMenuOpen === dropdown ? null : dropdown);
@@ -62,10 +58,6 @@ export default function DashSidebar() {
   const toggleSubMenu = (dropdown2) => {
     setOpenSubMenu2(openSubMenu2 === dropdown2 ? null : dropdown2);
   };
-
-  //   <Sidebar.Item onClick={handleSignout} icon={HiArrowSmRight}>
-  //   Sign Out
-  // </Sidebar.Item>
 
   return (
     <>
@@ -402,9 +394,9 @@ export default function DashSidebar() {
                 href="javascript:void(0)"
                 className="text-gray-300 text-sm flex items-center cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2.5 transition-all duration-300"
               >
-                <FaUserCircle className="w-[18px] h-[18px] mr-3" />
+                <IoPeople className="w-[18px] h-[18px] mr-3" />
                 <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                  Audience
+                  Users Dashboard
                 </span>
                 <MdKeyboardArrowDown
                   className={`arrowIcon ml-auto transition-transform duration-500 ${
@@ -433,22 +425,6 @@ export default function DashSidebar() {
                     <span>Total Admissions</span>
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/dashboard?tab=admission-form"
-                    className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
-                  >
-                    <span>Student Admission Form</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/dashboard?tab=student-dahsboard"
-                    className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
-                  >
-                    <span>Student Dashboard</span>
-                  </Link>
-                </li>
               </ul>
             </li>
 
@@ -460,7 +436,7 @@ export default function DashSidebar() {
               >
                 <FaChalkboardTeacher className="w-[18px] h-[18px] mr-3" />
                 <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                  Training
+                  Training Mangement
                 </span>
 
                 <MdKeyboardArrowDown
@@ -497,9 +473,9 @@ export default function DashSidebar() {
                 onClick={() => toggleDropdown("services")}
                 className="text-gray-300 text-sm flex items-center cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2.5 transition-all duration-300"
               >
-                <FaLaptopCode className="w-[18px] h-[18px] mr-3" />
+                <PiStudentBold className="w-[18px] h-[18px] mr-3" />
                 <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                  Services
+                  Student Management
                 </span>
                 <MdKeyboardArrowDown
                   className={`arrowIcon ml-auto transition-transform duration-500 ${
@@ -514,18 +490,18 @@ export default function DashSidebar() {
               >
                 <li>
                   <Link
-                    to="/dashboard?tab=service-form"
+                    to="/dashboard?tab=admission-form"
                     className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
                   >
-                    <span>Add Services</span>
+                    <span>Student Admission Form</span>
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/dashboard?tab=services"
+                    to="/dashboard?tab=student-dahsboard"
                     className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
                   >
-                    <span>Services Dashboard</span>
+                    <span>Students Dashboard</span>
                   </Link>
                 </li>
               </ul>
@@ -572,11 +548,8 @@ export default function DashSidebar() {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="javascript:void(0)"
-                    className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300"
-                  >
-                    <span>Logout</span>
+                  <a className="text-gray-300 text-sm block cursor-pointer hover:bg-[#0b1739] rounded-md px-3 py-2 transition-all duration-300">
+                    <span onClick={handleSignout}>Logout</span>
                   </a>
                 </li>
               </ul>

@@ -27,12 +27,13 @@ export default function FAQ_Dash() {
   };
   return (
     <div className="table-auto mt-4 overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500  ">
-      {adminDetails?.isAdmin && faqs.length > 0 ? (
+      {adminDetails.isAdmin && faqs.length > 0 ? (
         <Table hoverable className="shadow-md">
           <Table.Head>
             <Table.HeadCell>Post Date</Table.HeadCell>
             <Table.HeadCell>Question</Table.HeadCell>
             <Table.HeadCell>Answer</Table.HeadCell>
+            <Table.HeadCell>Edit</Table.HeadCell>
             <Table.HeadCell>Delete</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
@@ -46,6 +47,11 @@ export default function FAQ_Dash() {
                 </Table.Cell>
                 <Table.Cell>{faq.question}</Table.Cell>
                 <Table.Cell>{faq.answer}</Table.Cell>
+                <Table.Cell>
+                  <span className="hover:underline text-blue-800 cursor-pointer">
+                    Edit
+                  </span>
+                </Table.Cell>
 
                 <Table.Cell>
                   <span

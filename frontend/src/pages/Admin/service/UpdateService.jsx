@@ -1,9 +1,12 @@
-import { Button, Card, Label, Textarea, TextInput } from "flowbite-react";
+import { Button, Label, Textarea, TextInput } from "flowbite-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
+import useLoading from "./../../../hooks/useLoading";
+import SpinnerComponent from "../../../hooks/SpinnerComponent";
 
 export default function UpdateService() {
+  const { loading, setLoading } = useLoading();
   const { id } = useParams();
   // console.log(id);
   const navigate = useNavigate();
@@ -36,6 +39,7 @@ export default function UpdateService() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const res = await fetch(`/api/backend7/update/${id}`, {
         method: "PUT",
         headers: {
@@ -44,19 +48,23 @@ export default function UpdateService() {
         body: JSON.stringify(formData),
       });
       if (!res.ok) {
+        setLoading(false);
         toast.error("Failed to update service");
         return;
       } else {
+        setLoading(false);
         toast.success("Service Updated successfully");
         navigate("/dashboard?tab=services");
       }
     } catch (error) {
+      setLoading(false);
       toast.error("Failed to update service");
     }
   };
 
   return (
     <div className="mx-auto p-6 m-12 w-80 sm:w-[800px] bg-white rounded-lg shadow-xl">
+      {loading && <SpinnerComponent />}
       <h2 className="text-2xl font-bold">Services Form</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

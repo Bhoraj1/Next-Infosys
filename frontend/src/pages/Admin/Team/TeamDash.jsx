@@ -138,6 +138,11 @@ export default function TeamDash() {
         <Modal.Body>
           {selectedTeam && (
             <div className="max-w-lg mx-auto p-3  bg-white  rounded-xl text-center">
+              <img
+                src={selectedTeam.image}
+                alt="blog-image"
+                className="mx-auto rounded-xl"
+              />
               <h3 className="text-2xl font-bold text-gray-800 mb-2">
                 {selectedTeam.name}
               </h3>
