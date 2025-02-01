@@ -5,10 +5,12 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useTeams } from "../../../store/ContextAPI";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function TeamDash() {
   const { adminDetails } = useSelector((state) => state.admin);
   const { teams, setTeams } = useTeams();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -76,7 +78,10 @@ export default function TeamDash() {
                   </span>
                 </Table.Cell>
                 <Table.Cell>
-                  <span className="hover:underline text-blue-800 cursor-pointer">
+                  <span
+                    onClick={() => navigate(`/update-teamMember/${user._id}`)}
+                    className="hover:underline text-blue-800 cursor-pointer"
+                  >
                     Edit
                   </span>
                 </Table.Cell>

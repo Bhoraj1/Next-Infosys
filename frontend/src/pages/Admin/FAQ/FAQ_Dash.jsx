@@ -13,7 +13,6 @@ export default function FAQ_Dash() {
   const [showModal, setShowModal] = useState(false);
   const [faqIdTodelete, setFaqIdTodelete] = useState(null);
 
-
   const handleDeleteFAQ = async () => {
     try {
       const res = await fetch(`/api/backend8/delete-faq/${faqIdTodelete}`, {
@@ -52,7 +51,7 @@ export default function FAQ_Dash() {
                 <Table.Cell>{faq.answer}</Table.Cell>
                 <Table.Cell>
                   <span
-                    onClick={() => navigate(`/update-faq/${faq._id}`)}
+                    onClick={() => navigate(`update-faq/${faq._id}`)}
                     className="hover:underline text-blue-800 cursor-pointer"
                   >
                     Edit

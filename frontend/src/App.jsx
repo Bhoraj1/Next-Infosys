@@ -15,7 +15,6 @@ import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import AdminSignup from "./pages/Admin/AdminSignup.jsx";
-
 import ServiceDetails from "./pages/ServiceDetail.jsx";
 import UpdateTraining from "./pages/Admin/training/UpdateTraining.jsx";
 import UpdateStudent from "./pages/Admin/students/UpdateStudent.jsx";
@@ -28,6 +27,7 @@ import CoursesPage from "./components/CoursesPage.jsx";
 import Review from "./components/Review.jsx";
 import AllServices from "./pages/AllService.jsx";
 import FAQForm from "./pages/Admin/FAQ/FAQ_Form";
+import TeamForm from "./pages/Admin/Team/TeamForm.jsx";
 
 function App() {
   return (
@@ -62,14 +62,17 @@ function App() {
             <Route path="/verify-certificate" element={<VerifyCertificate />} />
             <Route path="/blog" element={<Blog />} />
 
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/update-training/:id" element={<UpdateTraining />} />
               <Route
                 path="/update-student/:studentId"
                 element={<UpdateStudent />}
-              />  
+              />
+
               <Route path="/update-faq/:faqId" element={<FAQForm />} />
+              <Route path="/update-teamMember/:teamId" element={<TeamForm />} />
+
               <Route path="/update-service/:id" element={<UpdateService />} />
             </Route>
             <Route path="/admin">

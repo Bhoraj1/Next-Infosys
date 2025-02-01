@@ -25,10 +25,10 @@ export const addReview = async (req, res, next) => {
   // console.log(req.file)
   // console.log(req.body);
   // Extract data from the request body
-  const {name, review, rating } = req.body;
+  const { name, review, rating } = req.body;
 
   // Validate required fields
-  if ( !name || !review || !rating) {
+  if (!name || !review || !rating) {
     return next(errorHandler(400, "All fields are required"));
   }
 
@@ -112,4 +112,32 @@ export const deleteReview = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};
+
+export const updateReview = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to Update this Review")
+    );
+  }
+  try {
+    const updateReview = await ReviewModel.findByIdAndUpdate(
+      req.params.reviewId,
+      {
+        $set: {
+          name: req.body.name,
+          review: req.body.answer,
+          image: req.body.image,
+          rating: req.body.rating,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "Review updated successfully",
+      updateReview,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

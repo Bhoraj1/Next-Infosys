@@ -110,3 +110,31 @@ export const deleteBlog = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateBlogPost = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to Update this blog")
+    );
+  }
+  try {
+    const updateReview = await BlogModel.findByIdAndUpdate(
+      req.params.blogId,
+      {
+        $set: {
+          name: req.body.name,
+          title: req.body.title,
+          image: req.body.image,
+          description: req.body.description,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "Blog Post updated successfully",
+      updateReview,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

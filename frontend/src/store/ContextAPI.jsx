@@ -24,7 +24,7 @@ export const ContextProvider = ({ children }) => {
         const data = await res.json();
         if (!res.ok) {
           setLoading(false);
-          console.error(data.message || "Failed to fetch users.");
+          console.error(data.message || "Failed to fetch faqs.");
         } else {
           setLoading(false);
           setFaqs(data.faqs);

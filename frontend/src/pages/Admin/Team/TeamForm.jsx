@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import useLoading from "../../../hooks/useLoading";
 import SpinnerComponent from "../../../hooks/SpinnerComponent";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function TeamForm() {
   const { setLoading, loading } = useLoading();
+  const { teamId } = useParams();
+  const navigate = useNavigate();
   // Single state for all form fields
   const [formData, setFormData] = useState({
     name: "",
@@ -22,6 +25,28 @@ export default function TeamForm() {
     image: null,
   });
 
+  useEffect(() => {
+    if (teamId) {
+      fetch(`/api/backend9/getTeams/${teamId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setFormData((prev) => ({
+            ...prev,
+            name: data.name,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            department: data.department,
+            bio: data.bio,
+            description: data.description,
+            socialMedia: data.socialMedia,
+            image: data.image,
+          }));
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [teamId]);
+
   const handleInputChange = (e) => {
     if (e.target.type === "file") {
       // Update the file
@@ -37,7 +62,7 @@ export default function TeamForm() {
       });
     } else {
       // For other fields (name, department, bio, description)
-      setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+      setFormData({ ...formData, [e.target.id]: e.target.value });
     }
   };
   const handleSubmit = async (e) => {
@@ -81,17 +106,33 @@ export default function TeamForm() {
 
     try {
       setLoading(true);
-      const response = await fetch("/api/backend9/add-team", {
-        method: "POST",
-        body: formDataToSend,
-      });
-
-      if (response.ok) {
+      let res;
+      if (teamId) {
+        res = await fetch(`/api/backend9/update-teamMember/${teamId}`, {
+          method: "PUT",
+          body: formDataToSend,
+        });
+      } else {
+        res = await fetch("/api/backend9/add-team", {
+          method: "POST",
+          body: formDataToSend,
+        });
+      }
+      if (!res.ok) {
         setLoading(false);
-        toast.success("Team member added successfully!");
+        toast.error(
+          teamId ? "Team Member Update Failed" : "Team Member Add Failed"
+        );
       } else {
         setLoading(false);
-        toast.error("Something went wrong!");
+        toast.success(
+          teamId ? "Team Member successfully" : "Team Member successfully"
+        );
+      }
+      if (teamId) {
+        navigate(`/dashboard?tab=team-dash`);
+      } else {
+        return null;
       }
     } catch (error) {
       setLoading(false);
@@ -100,11 +141,27 @@ export default function TeamForm() {
   };
 
   return (
-    <div className=" mx-auto mt-3 p-4 bg-white rounded-lg shadow-md">
+    <div
+      className={`${
+        teamId ? "mx-7 sm:mx-11 pt-16" : "mt-0"
+      } mx-auto mt-3 p-4 bg-white rounded-lg shadow-md `}
+    >
       {loading && <SpinnerComponent />}
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-        Add Team Member
+      <h2
+        className={`
+        text-2xl font-bold text-center text-gray-800 mb-6`}
+      >
+        {teamId ? "Update Team Member" : "Add Team Member"}
       </h2>
+      {teamId && formData.image && (
+        <div className="my-2 flex justify-center items-center ">
+          <img
+            src={formData.image}
+            alt="Team Member"
+            className="w-32 h-32 object-cover rounded-full"
+          />
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         {/* Name and Department */}
@@ -120,6 +177,7 @@ export default function TeamForm() {
               type="text"
               id="name"
               name="name"
+              value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter a Flll Name"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
@@ -139,6 +197,7 @@ export default function TeamForm() {
               id="department"
               name="department"
               onChange={handleInputChange}
+              value={formData.department}
               placeholder="Enter a post"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
@@ -156,6 +215,7 @@ export default function TeamForm() {
               id="email"
               name="email"
               onChange={handleInputChange}
+              value={formData.email}
               placeholder="Enter a email"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
@@ -173,6 +233,7 @@ export default function TeamForm() {
               id="phoneNumber"
               name="phoneNumber"
               onChange={handleInputChange}
+              value={formData.phoneNumber}
               placeholder="Enter a number"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
@@ -191,6 +252,7 @@ export default function TeamForm() {
               id="bio"
               name="bio"
               onChange={handleInputChange}
+              value={formData.bio}
               placeholder="Enter a bio"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               rows="4"
@@ -210,6 +272,7 @@ export default function TeamForm() {
               id="description"
               name="description"
               onChange={handleInputChange}
+              value={formData.description}
               placeholder="Enter a description"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               rows="4"
@@ -230,6 +293,7 @@ export default function TeamForm() {
               id="linkedin"
               name="socialMedia.linkedin"
               onChange={handleInputChange}
+              value={formData.socialMedia.linkedin}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="LinkedIn URL"
             />
@@ -247,6 +311,7 @@ export default function TeamForm() {
               id="github"
               name="socialMedia.github"
               onChange={handleInputChange}
+              value={formData.socialMedia.github}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="GitHub URL"
             />
@@ -264,6 +329,7 @@ export default function TeamForm() {
               id="twitter"
               name="socialMedia.twitter"
               onChange={handleInputChange}
+              value={formData.socialMedia.twitter}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Twitter URL"
             />
@@ -281,6 +347,7 @@ export default function TeamForm() {
               id="facebook"
               name="socialMedia.facebook"
               onChange={handleInputChange}
+              value={formData.socialMedia.facebook}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Facebook URL"
             />
@@ -295,7 +362,7 @@ export default function TeamForm() {
           >
             Image
           </label>
-          <input
+          <input  
             type="file"
             id="image"
             name="image"
@@ -310,7 +377,7 @@ export default function TeamForm() {
           type="submit"
           className=" px-4 py-2 text-white font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700"
         >
-          Add Team Member
+          {teamId ? "Update Team Member" : "Add Team Member"}
         </button>
       </form>
     </div>

@@ -40,7 +40,7 @@ export default function FAQForm() {
           body: JSON.stringify(formData),
         });
       } else {
-        const res = await fetch("/api/backend8/add-faq", {
+        res = await fetch("/api/backend8/add-faq", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

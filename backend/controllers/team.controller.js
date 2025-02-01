@@ -105,17 +105,25 @@ export const addTeam = async (req, res, next) => {
 
 export const getTeams = async (req, res, next) => {
   try {
-    const teams = await TeamModel.find();
-    if (teams.length === 0) {
-      return res.status(404).json({
-        message: "Teams not found",
+    if (req.params.id) {
+      const faq = await TeamModel.findById(req.params.id);
+      if (!faq) {
+        return res.status(404).json({ message: "FAQ not found" });
+      }
+      return res.status(200).json(faq);
+    } else {
+      const teams = await TeamModel.find();
+      if (teams.length === 0) {
+        return res.status(404).json({
+          message: "Teams not found",
+        });
+      }
+
+      res.status(200).json({
+        message: "Teams retrieved successfully",
+        teams,
       });
     }
-
-    res.status(200).json({
-      message: "Teams retrieved successfully",
-      teams,
-    });
   } catch (error) {
     next(error);
   }
@@ -135,6 +143,63 @@ export const deleteTeamMember = async (req, res, next) => {
   try {
     await TeamModel.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "TeamMember deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTeamMember = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to Update this Team Member")
+    );
+  }
+  let parsedSocialMedia;
+  try {
+    parsedSocialMedia = req.body.socialMedia
+      ? JSON.parse(req.body.socialMedia)
+      : undefined;
+  } catch (error) {
+    return next(new Error("Invalid JSON in socialMedia field"));
+  }
+
+  try {
+    let imageUrl = req.body.image;
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.v2.uploader
+          .upload_stream({ folder: "team" }, (error, result) => {
+            if (error) {
+              reject(new Error("Failed to upload image to Cloudinary"));
+            } else {
+              resolve(result.secure_url);
+            }
+          })
+          .end(req.file.buffer);
+      });
+      imageUrl = uploadResult;
+    }
+
+    const updateTeamMember = await TeamModel.findByIdAndUpdate(
+      req.params.teamId,
+      {
+        $set: {
+          name: req.body.name,
+          email: req.body.email,
+          phoneNumber: req.body.phoneNumber,
+          image: imageUrl,
+          department: req.body.department,
+          bio: req.body.bio,
+          description: req.body.description,
+          socialMedia: parsedSocialMedia,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "Team updated successfully",
+      updateTeamMember,
+    });
   } catch (error) {
     next(error);
   }
