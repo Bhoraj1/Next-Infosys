@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export default function FAQ_Dash() {
-  const { faqs, setFaqs } = useFaqs();
+  const { faqs, setFaqs} = useFaqs();
   const navigate = useNavigate();
   const { adminDetails } = useSelector((state) => state.admin);
   const [showModal, setShowModal] = useState(false);
@@ -51,7 +51,7 @@ export default function FAQ_Dash() {
                 <Table.Cell>{faq.answer}</Table.Cell>
                 <Table.Cell>
                   <span
-                    onClick={() => navigate(`update-faq/${faq._id}`)}
+                    onClick={() => navigate(`/update-faq/${faq._id}`)}
                     className="hover:underline text-blue-800 cursor-pointer"
                   >
                     Edit

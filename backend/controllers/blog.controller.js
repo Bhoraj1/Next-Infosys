@@ -76,17 +76,25 @@ export const postBlog = async (req, res, next) => {
 
 export const getBlog = async (req, res, next) => {
   try {
-    const blogs = await BlogModel.find();
-    if (blogs.length === 0) {
-      return res.status(404).json({
-        message: "Review not found",
+    if (req.params.id) {
+      const blogs = await BlogModel.findById(req.params.id);
+      if (!blogs) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+      return res.status(200).json(blogs);
+    } else {
+      const blogs = await BlogModel.find();
+      if (blogs.length === 0) {
+        return res.status(404).json({
+          message: "Review not found",
+        });
+      }
+
+      res.status(200).json({
+        message: "Review retrieved successfully",
+        blogs,
       });
     }
-
-    res.status(200).json({
-      message: "Review retrieved successfully",
-      blogs,
-    });
   } catch (error) {
     next(error);
   }
@@ -118,13 +126,29 @@ export const updateBlogPost = async (req, res, next) => {
     );
   }
   try {
+    let imageUrl = req.body.image;
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.v2.uploader
+          .upload_stream({ folder: "team" }, (error, result) => {
+            if (error) {
+              reject(new Error("Failed to upload image to Cloudinary"));
+            } else {
+              resolve(result.secure_url);
+            }
+          })
+          .end(req.file.buffer);
+      });
+      imageUrl = uploadResult;
+    }
+
     const updateReview = await BlogModel.findByIdAndUpdate(
       req.params.blogId,
       {
         $set: {
           name: req.body.name,
           title: req.body.title,
-          image: req.body.image,
+          image: imageUrl,
           description: req.body.description,
         },
       },

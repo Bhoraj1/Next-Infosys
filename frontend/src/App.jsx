@@ -28,6 +28,8 @@ import Review from "./components/Review.jsx";
 import AllServices from "./pages/AllService.jsx";
 import FAQForm from "./pages/Admin/FAQ/FAQ_Form";
 import TeamForm from "./pages/Admin/Team/TeamForm.jsx";
+import ReviewForm from "./pages/Admin/revieww/ReviewForm.jsx";
+import BlogForm from "./pages/Admin/blog/BlogForm.jsx";
 
 function App() {
   return (
@@ -72,6 +74,8 @@ function App() {
 
               <Route path="/update-faq/:faqId" element={<FAQForm />} />
               <Route path="/update-teamMember/:teamId" element={<TeamForm />} />
+              <Route path="/update-review/:reviewId" element={<ReviewForm />} />
+              <Route path="/update-blog/:blogId" element={<BlogForm />} />
 
               <Route path="/update-service/:id" element={<UpdateService />} />
             </Route>

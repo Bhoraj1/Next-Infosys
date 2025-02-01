@@ -4,10 +4,12 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useBlog } from "../../../store/ContextAPI";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function BlogDash() {
   const { adminDetails } = useSelector((state) => state.admin);
   const { blogs, setBlogs } = useBlog();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -66,7 +68,10 @@ export default function BlogDash() {
                   </span>
                 </Table.Cell>
                 <Table.Cell>
-                  <span className="hover:underline text-blue-800 cursor-pointer">
+                  <span
+                    onClick={() => navigate(`/update-blog/${blog._id}`)}
+                    className="hover:underline text-blue-800 cursor-pointer"
+                  >
                     Edit
                   </span>
                 </Table.Cell>

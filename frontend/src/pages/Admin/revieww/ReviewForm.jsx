@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, FileInput, Label, TextInput, Textarea } from "flowbite-react";
 import { toast } from "react-hot-toast";
 import SpinnerComponent from "./../../../hooks/SpinnerComponent";
 import useLoading from "./../../../hooks/useLoading";
+import { useNavigate, useParams } from "react-router-dom";
+import { useApiUpdate } from "../../../store/ContextAPI";
 
 export default function ReviewForm() {
   const { loading, setLoading } = useLoading();
+  const { reviewId } = useParams();
+  const navigate = useNavigate();
+  const { setApiUpdated } = useApiUpdate();
   const [formData, setFormData] = useState({
     name: "",
     review: "",
@@ -13,6 +18,21 @@ export default function ReviewForm() {
     image: null,
   });
 
+  useEffect(() => {
+    if (reviewId) {
+      fetch(`/api/backend10/getReview/${reviewId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          // console.log(data);
+          setFormData({
+            name: data.name,
+            review: data.review,
+            rating: data.rating,
+          });
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [reviewId]);
   const handleInputChange = (e) => {
     if (e.target.type === "file") {
       // Update the file
@@ -46,18 +66,37 @@ export default function ReviewForm() {
 
     try {
       setLoading(true);
-      const response = await fetch("/api/backend10/add-review", {
-        method: "POST",
-        body: reviewData,
-      });
-
-      const result = await response.json();
-      if (response.ok) {
+      let res;
+      if (reviewId) {
+        res = await fetch(`/api/backend10/update-review/${reviewId}`, {
+          method: "PUT",
+          body: reviewData,
+        });
+      } else {
+        res = await fetch("/api/backend10/add-review", {
+          method: "POST",
+          body: reviewData,
+        });
+      }
+      const result = await res.json();
+      if (res.ok) {
         setLoading(false);
-        toast.success("Review submitted successfully!");
+        toast.success(
+          reviewId ? "Review Update successfully" : "Review Add successfully"
+        );
       } else {
         setLoading(false);
-        toast.error(result.error || "Error submitting review");
+        toast.error(
+          reviewId
+            ? result.error || "Error submitting review"
+            : "Review Add Failed"
+        );
+      }
+      setApiUpdated((prev) => ({ ...prev, reviews: !prev.reviews }));
+      if (reviewId) {
+        navigate(`/dashboard?tab=review-dash`);
+      } else {
+        return null;
       }
     } catch (error) {
       setLoading(false);
@@ -66,10 +105,14 @@ export default function ReviewForm() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div
+      className={`max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg ${
+        reviewId ? "mt-16" : ""
+      }`}
+    >
       {loading && <SpinnerComponent />}
       <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-        Add a Review
+        {reviewId ? "Update a Review" : "Add a Review"}
       </h2>
 
       <form onSubmit={handleSubmit}>
@@ -81,6 +124,7 @@ export default function ReviewForm() {
             type="text"
             placeholder="Your name"
             onChange={handleInputChange}
+            value={formData.name}
             required
           />
         </div>
@@ -93,6 +137,7 @@ export default function ReviewForm() {
             placeholder="Write your review here..."
             rows={4}
             onChange={handleInputChange}
+            value={formData.review}
             required
           />
         </div>
@@ -103,6 +148,7 @@ export default function ReviewForm() {
             id="rating"
             name="rating"
             onChange={handleInputChange}
+            value={formData.rating}
             className="m-2 p-2 border rounded w-48"
             required
           >
@@ -134,7 +180,7 @@ export default function ReviewForm() {
 
         <div className="mb-4 text-center">
           <Button type="submit" className="w-full">
-            Submit Review
+            {reviewId ? "Update a Review" : "Add a Review"}
           </Button>
         </div>
       </form>

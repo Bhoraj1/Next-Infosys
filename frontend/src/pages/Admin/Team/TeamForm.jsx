@@ -3,10 +3,12 @@ import { toast } from "react-hot-toast";
 import useLoading from "../../../hooks/useLoading";
 import SpinnerComponent from "../../../hooks/SpinnerComponent";
 import { useNavigate, useParams } from "react-router-dom";
+import { useApiUpdate } from "../../../store/ContextAPI";
 
 export default function TeamForm() {
   const { setLoading, loading } = useLoading();
   const { teamId } = useParams();
+  const { setApiUpdated } = useApiUpdate();
   const navigate = useNavigate();
   // Single state for all form fields
   const [formData, setFormData] = useState({
@@ -30,7 +32,7 @@ export default function TeamForm() {
       fetch(`/api/backend9/getTeams/${teamId}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           setFormData((prev) => ({
             ...prev,
             name: data.name,
@@ -129,6 +131,7 @@ export default function TeamForm() {
           teamId ? "Team Member successfully" : "Team Member successfully"
         );
       }
+      setApiUpdated((prev) => ({ ...prev, teams: !prev.teams }));
       if (teamId) {
         navigate(`/dashboard?tab=team-dash`);
       } else {
@@ -362,7 +365,7 @@ export default function TeamForm() {
           >
             Image
           </label>
-          <input  
+          <input
             type="file"
             id="image"
             name="image"

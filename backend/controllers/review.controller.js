@@ -79,17 +79,25 @@ export const addReview = async (req, res, next) => {
 
 export const getReview = async (req, res, next) => {
   try {
-    const review = await ReviewModel.find();
-    if (review.length === 0) {
-      return res.status(404).json({
-        message: "Review not found",
+    if (req.params.id) {
+      const faq = await ReviewModel.findById(req.params.id);
+      if (!faq) {
+        return res.status(404).json({ message: "FAQ not found" });
+      }
+      return res.status(200).json(faq);
+    } else {
+      const review = await ReviewModel.find();
+      if (review.length === 0) {
+        return res.status(404).json({
+          message: "Review not found",
+        });
+      }
+
+      res.status(200).json({
+        message: "Review retrieved successfully",
+        review,
       });
     }
-
-    res.status(200).json({
-      message: "Review retrieved successfully",
-      review,
-    });
   } catch (error) {
     next(error);
   }
@@ -121,13 +129,29 @@ export const updateReview = async (req, res, next) => {
     );
   }
   try {
+    let imageUrl = req.body.image;
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.v2.uploader
+          .upload_stream({ folder: "team" }, (error, result) => {
+            if (error) {
+              reject(new Error("Failed to upload image to Cloudinary"));
+            } else {
+              resolve(result.secure_url);
+            }
+          })
+          .end(req.file.buffer);
+      });
+      imageUrl = uploadResult;
+    }
+
     const updateReview = await ReviewModel.findByIdAndUpdate(
       req.params.reviewId,
       {
         $set: {
           name: req.body.name,
           review: req.body.answer,
-          image: req.body.image,
+          image: imageUrl,
           rating: req.body.rating,
         },
       },

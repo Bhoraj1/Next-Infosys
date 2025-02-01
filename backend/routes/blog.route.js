@@ -11,8 +11,13 @@ import {
 const router = express.Router();
 
 router.post("/post-blog", upload.single("image"), verifyToken, postBlog);
-router.get("/getBlogs", getBlog);
+router.get("/getBlogs/:id?", getBlog);
 router.delete("/delete-blog/:id", verifyToken, deleteBlog);
-router.put("/update-blog/:blogId", verifyToken, updateBlogPost);
+router.put(
+  "/update-blog/:blogId",
+  upload.single("image"),
+  verifyToken,
+  updateBlogPost
+);
 
 export default router;

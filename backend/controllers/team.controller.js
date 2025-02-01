@@ -108,7 +108,7 @@ export const getTeams = async (req, res, next) => {
     if (req.params.id) {
       const faq = await TeamModel.findById(req.params.id);
       if (!faq) {
-        return res.status(404).json({ message: "FAQ not found" });
+        return res.status(404).json({ message: "Team not found" });
       }
       return res.status(200).json(faq);
     } else {

@@ -1,19 +1,23 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import useLoading from "../hooks/useLoading";
-import { useLocation } from "react-router-dom";
 const FaqContext = createContext();
 const TeamContext = createContext();
 const RevivewContext = createContext();
 const BlogContext = createContext();
 const LoaderContext = createContext();
+const ApiUpdateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const { adminDetails } = useSelector((state) => state.admin);
   const [faqs, setFaqs] = useState([]);
   const [teams, setTeams] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [apiUpdated, setApiUpdated] = useState({
+    faqs: false,
+    teams: false,
+    reviews: false,
+    blogs: false,
+  });
   const { setLoading, loading } = useLoading();
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     fetchFaqs();
-  }, []);
+  }, [apiUpdated.faqs]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -58,7 +62,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     fetchUsers();
-  }, [adminDetails?.isAdmin]);
+  }, [apiUpdated.teams]);
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -75,7 +79,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     fetchReviews();
-  }, []);
+  }, [apiUpdated.reviews]);
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -92,7 +96,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     fetchReviews();
-  }, []);
+  }, [apiUpdated.blogs]);
 
   return (
     <LoaderContext.Provider value={{ loading, setLoading }}>
@@ -100,7 +104,9 @@ export const ContextProvider = ({ children }) => {
         <RevivewContext.Provider value={{ reviews, setReviews, setLoading }}>
           <FaqContext.Provider value={{ faqs, setFaqs, setLoading }}>
             <TeamContext.Provider value={{ teams, setTeams, setLoading }}>
-              {children}
+              <ApiUpdateContext.Provider value={{ apiUpdated, setApiUpdated }}>
+                {children}
+              </ApiUpdateContext.Provider>
             </TeamContext.Provider>
           </FaqContext.Provider>
         </RevivewContext.Provider>
@@ -114,3 +120,4 @@ export const useTeams = () => useContext(TeamContext);
 export const useReview = () => useContext(RevivewContext);
 export const useBlog = () => useContext(BlogContext);
 export const useLoader = () => useContext(LoaderContext);
+export const useApiUpdate = () => useContext(ApiUpdateContext);

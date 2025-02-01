@@ -4,10 +4,12 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useReview } from "../../../store/ContextAPI";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function ReviewDash() {
   const { adminDetails } = useSelector((state) => state.admin);
   const { reviews, setReviews } = useReview();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [reviewIdTodelete, setReviewIdTodelete] = useState(null);
   const handleDeleteReview = async () => {
@@ -61,7 +63,10 @@ export default function ReviewDash() {
                   <p>{review.review}</p>
                 </Table.Cell>
                 <Table.Cell>
-                  <span className="hover:underline text-blue-800 cursor-pointer">
+                  <span
+                    onClick={() => navigate(`/update-review/${review._id}`)}
+                    className="hover:underline text-blue-800 cursor-pointer"
+                  >
                     Edit
                   </span>
                 </Table.Cell>
